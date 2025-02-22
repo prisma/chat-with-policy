@@ -1,12 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PolicyClient } from "@prisma/extension-policy";
+import { PolicyClient } from "../../team-expansion/policy/extension/src/index";
 import { AnimatePresence, motion } from "framer-motion";
 import { Paperclip, Send, Smile } from "lucide-react";
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { prisma } from "../prisma/policy";
+
+declare global {
+  // needed to avoid multiple instances when hot-reloading
+  var policy: PolicyClient<typeof prisma>;
+}
+
+// 1. Create a new PolicyClient instance with the public key
+globalThis.policy ??= new PolicyClient<typeof prisma>({
+  publicKey:
+    "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJoYXNoIjoiMTg3MDQwMjQ3MyJ9.N-8h36Bx5i3OCQzqa6kyDBIYSSqIeahIuCXfe-_GXIx55Oxnf-ZDldRzIonGwX2awFchQWLWLqMXdtETS2s0Bw",
+})
 
 type Message = {
   id: string;
@@ -21,22 +32,12 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const viewRef = useRef<HTMLDivElement>(null);
 
-  // 1. Create a new PolicyClient instance with the public key
-  const policy = useMemo(
-    () =>
-      new PolicyClient<typeof prisma>({
-        publicKey:
-          "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJoYXNoIjoiMTg3MDQwMjQ3MyJ9.N-8h36Bx5i3OCQzqa6kyDBIYSSqIeahIuCXfe-_GXIx55Oxnf-ZDldRzIonGwX2awFchQWLWLqMXdtETS2s0Bw",
-      }),
-    [],
-  );
-
   // 2. Create a new room named "general" if it doesn't exist
   useMemo(async () => {
     await policy.room.create({ data: { name: "general" } }).catch(() => {
       console.log("This room already exists");
     });
-  }, [policy]);
+  }, []);
 
   // 3. Subscribe to new messages in the "general" room
   useMemo(async () => {
@@ -44,7 +45,7 @@ export default function ChatInterface() {
     for await (const event of subscription) {
       setMessages((msgs) => [...msgs, event.created]);
     }
-  }, [policy]);
+  }, []);
 
   // 4. Write incoming messages into the database
   async function handleSendMessage(e: React.FormEvent) {
