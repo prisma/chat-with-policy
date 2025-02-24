@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PolicyClient } from "../../team-expansion/policy/extension/src/index";
+import { PolicyClient } from "@prisma/extension-policy";
 import { AnimatePresence, motion } from "framer-motion";
 import { Paperclip, Send, Smile } from "lucide-react";
 import type React from "react";
