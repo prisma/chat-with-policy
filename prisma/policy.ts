@@ -11,19 +11,11 @@ export const prisma = new PrismaClient().$extends(
         update: true,
       },
       message: {
-        pulse: {
-          $select: {
-            id: true,
-            content: true,
-            roomName: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
         create: true,
+        read: true,
       },
       $allModels: false,
     },
     contextSchema: z.object({}),
-  }),
+  })
 );
