@@ -17,7 +17,7 @@ declare global {
 globalThis.policy ??= new PolicyClient<typeof prisma>({
   publicKey:
     "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJoYXNoIjoiMTg3MDQwMjQ3MyJ9.N-8h36Bx5i3OCQzqa6kyDBIYSSqIeahIuCXfe-_GXIx55Oxnf-ZDldRzIonGwX2awFchQWLWLqMXdtETS2s0Bw",
-})
+});
 
 type Message = {
   id: string;
@@ -28,24 +28,30 @@ type Message = {
 
 export default function ChatInterface() {
   const [message, setMessage] = useState("");
-  const [username, setUsername] = useState("User");
+  const [username] = useState("User");
   const [messages, setMessages] = useState<Message[]>([]);
   const viewRef = useRef<HTMLDivElement>(null);
 
-  // 2. Create a new room named "general" if it doesn't exist
+  // 2. Create a new room named "general" if it doesn't exist.
   useMemo(async () => {
     await policy.room.create({ data: { name: "general" } }).catch(() => {
       console.log("This room already exists");
     });
   }, []);
 
-  // 3. Subscribe to new messages in the "general" room
-  useMemo(async () => {
-    const subscription = await policy.message.subscribe({ create: {} });
-    for await (const event of subscription) {
-      setMessages((msgs) => [...msgs, event.created]);
-    }
-  }, []);
+  // 3. Read messages from the room.
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const messages = await policy.message.findMany({
+        where: { roomName: "general" },
+        orderBy: { createdAt: "asc" },
+      });
+
+      setMessages(messages);
+    }, 500);
+
+    return () => clearInterval(interval);
+  });
 
   // 4. Write incoming messages into the database
   async function handleSendMessage(e: React.FormEvent) {
@@ -85,7 +91,9 @@ export default function ChatInterface() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className={`mb-4 ${message.sender === username ? "text-right" : "text-left"}`}
+                className={`mb-4 ${
+                  message.sender === username ? "text-right" : "text-left"
+                }`}
               >
                 <div
                   className={`inline-block p-3 rounded-lg ${

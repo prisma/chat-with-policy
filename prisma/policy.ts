@@ -11,8 +11,8 @@ export const prisma = new PrismaClient().$extends(
         update: true,
       },
       message: {
-        create: true,
         read: true,
+        create: true,
       },
       $allModels: false,
     },
