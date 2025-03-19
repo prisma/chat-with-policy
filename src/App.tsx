@@ -16,7 +16,7 @@ declare global {
 // 1. Create a new PolicyClient instance with the public key
 globalThis.policy ??= new PolicyClient<typeof prisma>({
   publicKey:
-    "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJoYXNoIjoiY2xqcmduYTZ2MDAwYm1xMGhramUzNHVzMy0zMTc1ODkwNzQzIn0.3Ck6zxePdbZnPCazLqxsFFzQTi0qhnPBxBrrAfjH0E5xBbABk0YJpdx7vtR4W3Zj5nu2mzCvcKUFCgL8aCVrAw",
+    "<public_key>",
 });
 
 type Message = {
