@@ -1,22 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PolicyClient } from "@prisma/extension-policy";
+import { AuthorizedClient } from "@prisma/security-rules";
 import { AnimatePresence, motion } from "framer-motion";
 import { Paperclip, Send, Smile } from "lucide-react";
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { prisma } from "../prisma/policy";
+import type rules from "../prisma/rules";
 
 declare global {
   // needed to avoid multiple instances when hot-reloading
-  var policy: PolicyClient<typeof prisma>;
+  var policy: AuthorizedClient<typeof rules>;
 }
 
 // 1. Create a new PolicyClient instance with the public key
-globalThis.policy ??= new PolicyClient<typeof prisma>({
-  publicKey:
-    "<public_key>",
+globalThis.policy ??= new AuthorizedClient<typeof rules>({
+  publicKey: "<public_key>",
 });
 
 type Message = {
