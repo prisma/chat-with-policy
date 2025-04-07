@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "biome check --fix --unsafe",
     "preview": "vite preview",
-    "policy:deploy": "pnpm prisma rules --early-access deploy my_rules -f ./prisma/rules.ts"
+    "rules:deploy": "pnpm prisma rules --early-access deploy my_rules -f ./prisma/rules.ts"
   },
   "dependencies": {
     "@prisma/client": "dev",
