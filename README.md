@@ -16,16 +16,16 @@
 
 ## 2. Define your rules
 
-Go to `policy.ts` and define your rules.
+Go to `rules.ts` and define your rules.
 
 ## 3. Deploy your rules
 
-Run `pnpm prisma platform policy deploy ...` to deploy your rules.
+Run `pnpm prisma rules deploy ...` to deploy your rules.
 
 To make things simpler, we've created an npm script to deploy the rules.
 
 ```sh
-pnpm policy:deploy
+pnpm rules:deploy
 ```
 
 > Check out your `package.json` to see how it's done.
